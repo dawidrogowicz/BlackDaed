@@ -1,0 +1,96 @@
+[gd_scene load_steps=24 format=2]
+
+[ext_resource path="res://Actors/Enemy.gd" type="Script" id=1]
+[ext_resource path="res://assets/characters/daemon_grunt/daemon_grunt-idle.png" type="Texture" id=2]
+[ext_resource path="res://assets/characters/DemonGirl/demon/demon_attack_s/06.png" type="Texture" id=3]
+[ext_resource path="res://assets/characters/DemonGirl/demon/demon_attack_s/11.png" type="Texture" id=4]
+[ext_resource path="res://assets/characters/DemonGirl/demon/demon_attack_s/05.png" type="Texture" id=5]
+[ext_resource path="res://assets/characters/daemon_grunt/daemon_grunt-walk.png" type="Texture" id=6]
+[ext_resource path="res://assets/characters/DemonGirl/demon/demon_attack_s/04.png" type="Texture" id=8]
+[ext_resource path="res://assets/characters/DemonGirl/demon/demon_attack_s/10.png" type="Texture" id=9]
+[ext_resource path="res://assets/characters/DemonGirl/demon/demon_attack_s/07.png" type="Texture" id=11]
+[ext_resource path="res://assets/characters/DemonGirl/demon/demon_attack_s/01.png" type="Texture" id=13]
+[ext_resource path="res://assets/characters/DemonGirl/demon/demon_attack_s/08.png" type="Texture" id=15]
+[ext_resource path="res://assets/characters/DemonGirl/demon/demon_attack_s/09.png" type="Texture" id=20]
+[ext_resource path="res://assets/characters/DemonGirl/demon/demon_attack_s/02.png" type="Texture" id=21]
+[ext_resource path="res://assets/characters/DemonGirl/demon/demon_attack_s/03.png" type="Texture" id=25]
+
+[sub_resource type="AtlasTexture" id=1]
+flags = 4
+atlas = ExtResource( 2 )
+region = Rect2( 0, 0, 64, 64 )
+
+[sub_resource type="AtlasTexture" id=2]
+flags = 4
+atlas = ExtResource( 2 )
+region = Rect2( 64, 0, 64, 64 )
+
+[sub_resource type="AtlasTexture" id=3]
+flags = 4
+atlas = ExtResource( 2 )
+region = Rect2( 128, 0, 64, 64 )
+
+[sub_resource type="AtlasTexture" id=4]
+flags = 4
+atlas = ExtResource( 2 )
+region = Rect2( 192, 0, 64, 64 )
+
+[sub_resource type="AtlasTexture" id=5]
+flags = 4
+atlas = ExtResource( 6 )
+region = Rect2( 0, 0, 64, 64 )
+
+[sub_resource type="AtlasTexture" id=6]
+flags = 4
+atlas = ExtResource( 6 )
+region = Rect2( 64, 0, 64, 64 )
+
+[sub_resource type="AtlasTexture" id=7]
+flags = 4
+atlas = ExtResource( 6 )
+region = Rect2( 128, 0, 64, 64 )
+
+[sub_resource type="SpriteFrames" id=8]
+animations = [ {
+"frames": [ SubResource( 1 ), SubResource( 2 ), SubResource( 3 ), SubResource( 4 ) ],
+"loop": true,
+"name": "idle",
+"speed": 4.0
+}, {
+"frames": [ ExtResource( 13 ), ExtResource( 21 ), ExtResource( 25 ), ExtResource( 8 ), ExtResource( 5 ), ExtResource( 3 ), ExtResource( 11 ), ExtResource( 15 ), ExtResource( 20 ), ExtResource( 9 ), ExtResource( 4 ) ],
+"loop": false,
+"name": "attack",
+"speed": 14.0
+}, {
+"frames": [ SubResource( 5 ), SubResource( 6 ), SubResource( 7 ) ],
+"loop": true,
+"name": "walk",
+"speed": 6.0
+} ]
+
+[sub_resource type="RectangleShape2D" id=9]
+extents = Vector2( 12.1133, 16.6259 )
+
+[node name="Enemy" type="KinematicBody2D"]
+collision_layer = 4
+collision_mask = 2
+script = ExtResource( 1 )
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="."]
+modulate = Color( 1, 0.5, 0.5, 1 )
+position = Vector2( 56, -32 )
+z_index = 1
+frames = SubResource( 8 )
+animation = "walk"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2( 55.2929, -16.7071 )
+shape = SubResource( 9 )
+
+[node name="Area2D" type="Area2D" parent="."]
+collision_layer = 4
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2( 55.2929, -16.7071 )
+shape = SubResource( 9 )
