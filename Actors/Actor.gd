@@ -20,7 +20,7 @@ var is_alive = true
 onready var health = max_health setget _set_health
  
 func _physics_process(delta):
-	motion.y += GRAVITY
+	motion.y += GRAVITY * delta
 
 func die():
 	is_alive = false

@@ -59,7 +59,7 @@ func handle_input(motion_vector):
 		_wall_touch_timer.start()
 	return motion_vector
 
-func _physics_process(delta):
+func _physics_process(_delta):
 	motion = handle_input(motion)
 	motion.x = clamp(motion.x, -max_mov_speed, max_mov_speed)
 	motion.y = clamp(motion.y, -jump_accel, max_fall_speed)
@@ -70,14 +70,16 @@ func _on_AnimatedSprite_animation_finished():
 	if $AnimatedSprite.animation == 'attack':
 		is_attacking = false 
 
-func _on_EnemyDetector_area_entered(area):
+func _on_EnemyDetector_area_entered(_area):
 	if !_invulnerability_timer.is_stopped():
 		return
 	_invulnerability_timer.start()
 	$AnimationPlayer.play('Damaged')
 	$AnimationPlayer.queue('Invulnerable')
-	take_damage(40)
+	take_damage(60)
 
 func _on_Player_death():
+	motion = Vector2.ZERO
+	motion = move_and_slide(motion, UP)
 	$AnimatedSprite.rotate(PI / 2)
 	$AnimatedSprite.stop()

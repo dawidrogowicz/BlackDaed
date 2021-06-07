@@ -150,5 +150,4 @@ shape = SubResource( 9 )
 
 [connection signal="death" from="." to="." method="_on_Player_death"]
 [connection signal="animation_finished" from="AnimatedSprite" to="." method="_on_AnimatedSprite_animation_finished"]
-[connection signal="timeout" from="Timers/InvulnerabilityTimer" to="." method="_on_InvulnerabilityTimer_timeout"]
 [connection signal="area_entered" from="EnemyDetector" to="." method="_on_EnemyDetector_area_entered"]
