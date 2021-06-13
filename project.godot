@@ -9,26 +9,24 @@
 config_version=4
 
 _global_script_classes=[ {
-"base": "KinematicBody2D",
-"class": "Actor",
-"language": "GDScript",
-"path": "res://Actors/Actor.gd"
-}, {
 "base": "",
 "class": "GitAPI",
 "language": "NativeScript",
 "path": "res://git_api.gdns"
 } ]
 _global_script_class_icons={
-"Actor": "",
 "GitAPI": ""
 }
 
 [application]
 
 config/name="Black Daed"
-run/main_scene="res://World.tscn"
+run/main_scene="res://Levels/FirstLevel.tscn"
 config/icon="res://icon.png"
+
+[autoload]
+
+EventBus="*res://Singletones/EventBus.gd"
 
 [gdnative]
 

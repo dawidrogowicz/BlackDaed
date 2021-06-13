@@ -1,0 +1,141 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://Interface/DeathScreen.gd" type="Script" id=1]
+[ext_resource path="res://assets/fonts/atari-classic-font/AtariClassicChunky-PxXP.ttf" type="DynamicFontData" id=2]
+[ext_resource path="res://assets/fonts/AtariButtonFont.tres" type="DynamicFont" id=3]
+
+[sub_resource type="Gradient" id=1]
+colors = PoolColorArray( 0, 0, 0, 1, 0, 0, 0, 0.862745 )
+
+[sub_resource type="GradientTexture" id=2]
+gradient = SubResource( 1 )
+width = 1024
+
+[sub_resource type="DynamicFont" id=3]
+size = 48
+extra_spacing_bottom = 32
+font_data = ExtResource( 2 )
+
+[sub_resource type="Animation" id=4]
+length = 1.2
+tracks/0/type = "value"
+tracks/0/path = NodePath("VBoxContainer/Label:custom_colors/font_color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.5, 1 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 0, 0, 0 ), Color( 1, 0, 0, 0 ), Color( 1, 0, 0, 1 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("VBoxContainer/RestartButton:custom_colors/font_color")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.9, 1.1 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Overlay:modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ) ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("VBoxContainer/TitleScreenButton:custom_colors/font_color")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 1, 1.2 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ) ]
+}
+
+[node name="DeathScreen" type="Control"]
+pause_mode = 2
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Overlay" type="TextureRect" parent="."]
+modulate = Color( 1, 1, 1, 0 )
+anchor_right = 1.0
+anchor_bottom = 1.0
+texture = SubResource( 2 )
+stretch_mode = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -264.0
+margin_top = -36.0
+margin_right = 264.0
+margin_bottom = 68.0
+alignment = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="VBoxContainer"]
+margin_right = 528.0
+margin_bottom = 80.0
+custom_fonts/font = SubResource( 3 )
+custom_colors/font_color = Color( 1, 0, 0, 1 )
+text = "You Died"
+align = 1
+
+[node name="RestartButton" type="Button" parent="VBoxContainer"]
+margin_left = 146.0
+margin_top = 84.0
+margin_right = 382.0
+margin_bottom = 122.0
+grow_horizontal = 0
+focus_mode = 0
+size_flags_horizontal = 6
+custom_fonts/font = ExtResource( 3 )
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+enabled_focus_mode = 0
+text = "RESTART"
+flat = true
+
+[node name="TitleScreenButton" type="Button" parent="VBoxContainer"]
+margin_left = 66.0
+margin_top = 126.0
+margin_right = 462.0
+margin_bottom = 164.0
+grow_horizontal = 0
+focus_mode = 0
+size_flags_horizontal = 6
+custom_fonts/font = ExtResource( 3 )
+custom_colors/font_color = Color( 1, 1, 1, 0 )
+enabled_focus_mode = 0
+text = "TITLE SCREEN"
+flat = true
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+anims/FadeIn = SubResource( 4 )
+
+[connection signal="pressed" from="VBoxContainer/RestartButton" to="." method="_on_RestartButton_pressed"]
+[connection signal="pressed" from="VBoxContainer/TitleScreenButton" to="." method="_on_TitleScreenButton_pressed"]

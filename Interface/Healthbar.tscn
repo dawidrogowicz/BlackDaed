@@ -1,0 +1,40 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://Interface/Healthbar.gd" type="Script" id=1]
+[ext_resource path="res://assets/fonts/AtariButtonFont.tres" type="DynamicFont" id=2]
+
+[sub_resource type="Gradient" id=2]
+colors = PoolColorArray( 0.59375, 0.132202, 0.22956, 1, 0.9375, 0.60791, 0.723782, 1 )
+
+[sub_resource type="GradientTexture" id=3]
+gradient = SubResource( 2 )
+
+[sub_resource type="StyleBoxTexture" id=4]
+texture = SubResource( 3 )
+region_rect = Rect2( 0, 0, 2048, 1 )
+
+[sub_resource type="StyleBoxFlat" id=5]
+bg_color = Color( 0.133333, 0.14902, 0.203922, 1 )
+
+[node name="Healthbar" type="Control"]
+margin_left = -2.1189
+margin_right = 1021.88
+margin_bottom = 600.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ProgressBar" type="ProgressBar" parent="."]
+margin_left = 20.0
+margin_top = 20.0
+margin_right = 254.0
+margin_bottom = 47.0
+custom_styles/fg = SubResource( 4 )
+custom_styles/bg = SubResource( 5 )
+custom_fonts/font = ExtResource( 2 )
+value = 50.0
+rounded = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
