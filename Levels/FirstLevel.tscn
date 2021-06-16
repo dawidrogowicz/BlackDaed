@@ -947,9 +947,6 @@ position = Vector2( 294, -220 )
 shape = SubResource( 41 )
 one_way_collision = true
 
-[node name="Enemy" parent="." instance=ExtResource( 2 )]
-position = Vector2( 113.14, -4.89275 )
-
 [node name="Player" parent="." instance=ExtResource( 1 )]
 position = Vector2( 33.9028, -38.1407 )
 collision_mask = 2
@@ -957,3 +954,14 @@ collision_mask = 2
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
 [node name="RuntimeUI" parent="CanvasLayer" instance=ExtResource( 3 )]
+
+[node name="Enemies" type="Node" parent="."]
+
+[node name="Enemy" parent="Enemies" instance=ExtResource( 2 )]
+position = Vector2( 113.14, -4.89275 )
+
+[node name="Enemy2" parent="Enemies" instance=ExtResource( 2 )]
+position = Vector2( 254.778, -222.236 )
+
+[node name="Enemy3" parent="Enemies" instance=ExtResource( 2 )]
+position = Vector2( 572.258, -244.46 )

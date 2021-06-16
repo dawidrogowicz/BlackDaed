@@ -8,7 +8,7 @@ func toggle_pause_menu():
 	self.visible = next_state
 
 func _input(event):
-	if _can_pause && event.is_action_pressed("ui_cancel"):
+	if _can_pause and event.is_action_pressed("ui_cancel"):
 		toggle_pause_menu()
 		
 func _ready():

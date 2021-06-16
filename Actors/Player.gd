@@ -1,5 +1,6 @@
 extends KinematicBody2D
 
+
 const MOVACCEL = 32
 const GRAVITY = 20
 
@@ -7,18 +8,15 @@ export var max_fall_speed = 600
 export var max_mov_speed = 200
 export var jump_accel = 400
 export var max_health = 100
+export var init_damage = 60
 
 var _motion = Vector2.ZERO
-var _facing_right = true
 var _is_attacking = false
 var _is_alive = true
 var _double_jump_possible = false
 
-onready var _double_jump_timer = $Timers/DoubleJumpTimer
-onready var _wall_jump_timer = $Timers/WallJumpTimer
-onready var _wall_touch_timer = $Timers/WallTouchTimer
-onready var _invulnerability_timer = $Timers/InvulnerabilityTimer
 onready var _health = max_health setget _set_health
+onready var _damage = init_damage
 
 func _set_health(new_health):
 	var prev_health = _health
@@ -28,6 +26,7 @@ func _set_health(new_health):
 		if _health < 1:
 			die();
 
+
 func die():
 	_is_alive = false
 	_motion = Vector2.ZERO
@@ -36,40 +35,44 @@ func die():
 	$AnimatedSprite.stop()
 	EventBus.emit_signal("player_killed")
 
+
 func take_damage(dmg):
 	var new_health = _health - dmg
 	_set_health(new_health)
 
-func run_animation():
+
+func handle_attack():
 	if !_is_alive:
 		return
-	if Input.is_action_just_pressed("lmb") && !_is_attacking:
-		$AnimatedSprite.play("attack")
+	if Input.is_action_just_pressed("lmb") and !_is_attacking:
 		_is_attacking = true
+		$AnimatedSprite.play("attack")
+		$Timers/SlowAttackTimeoutTimer.start()
 		return
-	if _is_attacking:
+
+
+func handle_animation():
+	if !_is_alive or _is_attacking:
 		return
 		
-	if is_on_floor() && abs(_motion.x) > 1:
+	if is_on_floor() and abs(_motion.x) > 1:
 		$AnimatedSprite.play("walk")
 	else:
 		$AnimatedSprite.play("idle")
-	
-	if _facing_right:
-		$AnimatedSprite.flip_h = true
-	else:
-		$AnimatedSprite.flip_h = false
+		
 
-func handle_input(motion_vector):
+func handle_movement(motion_vector):
 	if !_is_alive:
 		return motion_vector
+		
 	if Input.is_action_pressed("move_left"):
 		motion_vector.x -= MOVACCEL
-		_facing_right = false
-	#		$AnimatedSprite.play("idle")
+		$AnimatedSprite.scale.x = 1
+		
 	elif Input.is_action_pressed("move_right"):
 		motion_vector.x += MOVACCEL
-		_facing_right = true
+		$AnimatedSprite.scale.x = -1
+		
 	else:
 		motion_vector.x = lerp(motion_vector.x, 0, .24);
 		
@@ -77,42 +80,60 @@ func handle_input(motion_vector):
 		if (is_on_floor()):
 			motion_vector.y -= jump_accel
 			_double_jump_possible = true
-			_double_jump_timer.start()
+			$Timers/DoubleJumpTimer.start()
 		# Wall Jump
-		elif !_wall_touch_timer.is_stopped() && _wall_jump_timer.is_stopped():
+		elif !$Timers/WallTouchTimer.is_stopped() \
+			and $Timers/WallJumpTimer.is_stopped():
 			motion_vector.y -= jump_accel * .9
-			_wall_jump_timer.start()
+			$Timers/WallJumpTimer.start()
 		# Double Jump
-		elif _double_jump_possible && _double_jump_timer.is_stopped():
+		elif _double_jump_possible and $Timers/DoubleJumpTimer.is_stopped():
 			motion_vector.y -= jump_accel * .8
 			_double_jump_possible = false
 		
 	if is_on_wall():
-		motion_vector.y = clamp(motion_vector.y, -max_fall_speed/2, max_fall_speed/2)
-		_wall_touch_timer.start()
+		motion_vector.y = \
+			clamp(motion_vector.y, -max_fall_speed/2, max_fall_speed/2)
+		$Timers/WallTouchTimer.start()
+		
 	return motion_vector
+
 
 # Lifecycles
 func _ready():
 	EventBus.connect("player_attacked", self, "_on_player_attacked")
 	
+	
 func _physics_process(delta):
 	_motion.y += GRAVITY
-	_motion = handle_input(_motion)
+	_motion = handle_movement(_motion)
 	_motion.x = clamp(_motion.x, -max_mov_speed, max_mov_speed)
 	_motion.y = clamp(_motion.y, -max_fall_speed, max_fall_speed)
 	_motion = move_and_slide(_motion, Vector2.UP)
-	run_animation()
+	handle_attack()
+	handle_animation()
+
 
 # Signals
-func _on_AnimatedSprite_animation_finished():
-	if $AnimatedSprite.animation == "attack":
-		_is_attacking = false 
-
 func _on_player_attacked(damage):
-	if !_invulnerability_timer.is_stopped():
+	if !$Timers/InvulnerabilityTimer.is_stopped():
 		return
-	_invulnerability_timer.start()
+	$Timers/InvulnerabilityTimer.start()
 	$AnimationPlayer.play("Damaged")
 	$AnimationPlayer.queue("Invulnerable")
 	take_damage(damage)
+
+
+func _on_SlowAttackTimeout_timeout():
+	$Timers/SlowAttackTimer.start()
+	$AnimatedSprite/SlowAttackArea.monitoring = true
+
+
+func _on_SlowAttackTimer_timeout():
+	$AnimatedSprite/SlowAttackArea.monitoring = false
+	_is_attacking = false
+
+
+func _on_SlowAttackArea_body_entered(body):
+	if body.is_in_group("vulnerable") and body.has_method("take_damage"):
+		body.take_damage(_damage)
