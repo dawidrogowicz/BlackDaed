@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/SwordSwoosh.wav-91f2d0918b9d577f4eeed260e35463d3.sample"
+
+[deps]
+
+source_file="res://assets/sounds/player/SwordSwoosh.wav"
+dest_files=[ "res://.import/SwordSwoosh.wav-91f2d0918b9d577f4eeed260e35463d3.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0

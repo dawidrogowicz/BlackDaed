@@ -31,12 +31,20 @@ func die():
 	_is_alive = false
 	_motion = Vector2.ZERO
 	_motion = move_and_slide(_motion, Vector2.UP)
-	$AnimatedSprite.rotate(PI / 2)
-	$AnimatedSprite.stop()
+	$Sprite.rotate(PI / 2)
+	$Audio/PlayerDeath.play()
+	$SpriteAnimationPlayer.stop()
 	EventBus.emit_signal("player_killed")
 
 
 func take_damage(dmg):
+	if !$Timers/InvulnerabilityTimer.is_stopped():
+		return
+	$Timers/InvulnerabilityTimer.start()
+	$FXAnimationPlayer.play("damaged")
+	$FXAnimationPlayer.queue("invulnerable")
+	$Audio/PlayerHit.play()
+	
 	var new_health = _health - dmg
 	_set_health(new_health)
 
@@ -46,7 +54,7 @@ func handle_attack():
 		return
 	if Input.is_action_just_pressed("lmb") and !_is_attacking:
 		_is_attacking = true
-		$AnimatedSprite.play("attack")
+		$SpriteAnimationPlayer.play("attack")
 		$Timers/SlowAttackTimeoutTimer.start()
 		return
 
@@ -56,9 +64,9 @@ func handle_animation():
 		return
 		
 	if is_on_floor() and abs(_motion.x) > 1:
-		$AnimatedSprite.play("walk")
+		$SpriteAnimationPlayer.play("walk")
 	else:
-		$AnimatedSprite.play("idle")
+		$SpriteAnimationPlayer.play("idle")
 		
 
 func handle_movement(motion_vector):
@@ -67,11 +75,11 @@ func handle_movement(motion_vector):
 		
 	if Input.is_action_pressed("move_left"):
 		motion_vector.x -= MOVACCEL
-		$AnimatedSprite.scale.x = 1
+		$Sprite.scale.x = 1
 		
 	elif Input.is_action_pressed("move_right"):
 		motion_vector.x += MOVACCEL
-		$AnimatedSprite.scale.x = -1
+		$Sprite.scale.x = -1
 		
 	else:
 		motion_vector.x = lerp(motion_vector.x, 0, .24);
@@ -99,6 +107,15 @@ func handle_movement(motion_vector):
 	return motion_vector
 
 
+func play_attack_sound():
+	for hit_body in $Sprite/SlowAttackArea.get_overlapping_bodies():
+		if hit_body and not hit_body.is_in_group("player"):
+			$Audio/Attacks/SlowHit.play()
+			return
+	
+	$Audio/Attacks/SlowMiss.play()
+
+
 # Lifecycles
 func _ready():
 	EventBus.connect("player_attacked", self, "_on_player_attacked")
@@ -116,21 +133,18 @@ func _physics_process(delta):
 
 # Signals
 func _on_player_attacked(damage):
-	if !$Timers/InvulnerabilityTimer.is_stopped():
-		return
-	$Timers/InvulnerabilityTimer.start()
-	$AnimationPlayer.play("Damaged")
-	$AnimationPlayer.queue("Invulnerable")
 	take_damage(damage)
 
 
 func _on_SlowAttackTimeout_timeout():
 	$Timers/SlowAttackTimer.start()
-	$AnimatedSprite/SlowAttackArea.monitoring = true
+	$Sprite/SlowAttackArea.monitoring = true
 
 
 func _on_SlowAttackTimer_timeout():
-	$AnimatedSprite/SlowAttackArea.monitoring = false
+	play_attack_sound()
+			
+	$Sprite/SlowAttackArea.monitoring = false
 	_is_attacking = false
 
 

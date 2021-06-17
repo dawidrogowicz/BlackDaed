@@ -19,7 +19,9 @@ func _set_health(new_health):
 func die():
 	_is_alive = false
 	$AnimatedSprite.rotate(PI / 2)
+	$AnimatedSprite.position.y = $AnimatedSprite.position.y + 20
 	$AnimatedSprite.stop()
+	$DeathAudio.play()
 	$GarbageTimer.start()
 
 
