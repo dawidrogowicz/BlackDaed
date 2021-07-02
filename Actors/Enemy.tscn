@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=2]
+[gd_scene load_steps=27 format=2]
 
 [ext_resource path="res://Actors/Enemy.gd" type="Script" id=1]
 [ext_resource path="res://assets/characters/daemon_grunt/daemon_grunt-idle.png" type="Texture" id=2]
@@ -58,15 +58,15 @@ animations = [ {
 "name": "idle",
 "speed": 4.0
 }, {
-"frames": [ ExtResource( 13 ), ExtResource( 21 ), ExtResource( 25 ), ExtResource( 8 ), ExtResource( 5 ), ExtResource( 3 ), ExtResource( 11 ), ExtResource( 15 ), ExtResource( 20 ), ExtResource( 9 ), ExtResource( 4 ) ],
-"loop": false,
-"name": "attack",
-"speed": 14.0
-}, {
 "frames": [ SubResource( 5 ), SubResource( 6 ), SubResource( 7 ) ],
 "loop": true,
 "name": "walk",
 "speed": 6.0
+}, {
+"frames": [ ExtResource( 13 ), ExtResource( 21 ), ExtResource( 25 ), ExtResource( 8 ), ExtResource( 5 ), ExtResource( 3 ), ExtResource( 11 ), ExtResource( 15 ), ExtResource( 20 ), ExtResource( 9 ), ExtResource( 4 ) ],
+"loop": false,
+"name": "attack",
+"speed": 14.0
 } ]
 
 [sub_resource type="RectangleShape2D" id=9]
@@ -88,6 +88,9 @@ tracks/0/keys = {
 "update": 1,
 "values": [ true, false, true ]
 }
+
+[sub_resource type="CircleShape2D" id=11]
+radius = 150.0
 
 [node name="Enemy" type="KinematicBody2D" groups=[
 "vulnerable",
@@ -119,8 +122,21 @@ shape = SubResource( 9 )
 wait_time = 2.0
 one_shot = true
 
+[node name="AttackTimer" type="Timer" parent="."]
+wait_time = 3.0
+one_shot = true
+
 [node name="DeathAudio" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource( 7 )
 
+[node name="Area2D" type="Area2D" parent="."]
+collision_layer = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource( 11 )
+
 [connection signal="body_entered" from="PlayerDetector" to="." method="_on_PlayerDetector_body_entered"]
 [connection signal="timeout" from="GarbageTimer" to="." method="_on_GarbageTimer_timeout"]
+[connection signal="timeout" from="AttackTimer" to="." method="_on_AttackTimer_timeout"]
+[connection signal="body_entered" from="Area2D" to="." method="_on_Area2D_body_entered"]
+[connection signal="body_exited" from="Area2D" to="." method="_on_Area2D_body_exited"]

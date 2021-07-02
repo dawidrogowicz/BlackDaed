@@ -1,6 +1,6 @@
 extends Control
 
-var _can_pause = true
+var _can_manually_pause = true
 
 func toggle_pause_menu():
 	var next_state = not get_tree().paused
@@ -8,7 +8,7 @@ func toggle_pause_menu():
 	self.visible = next_state
 
 func _input(event):
-	if _can_pause and event.is_action_pressed("ui_cancel"):
+	if _can_manually_pause and event.is_action_pressed("ui_cancel"):
 		toggle_pause_menu()
 		
 func _ready():
@@ -16,7 +16,7 @@ func _ready():
 
 # Signals
 func _on_player_killed():
-	_can_pause = false
+	_can_manually_pause = false
 
 func _on_ResumeButton_pressed():
 	toggle_pause_menu()

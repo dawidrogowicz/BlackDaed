@@ -959,10 +959,7 @@ collision_mask = 2
 [node name="Enemies" type="Node" parent="."]
 
 [node name="Enemy" parent="Enemies" instance=ExtResource( 2 )]
-position = Vector2( 193.766, -18.7017 )
-
-[node name="Enemy2" parent="Enemies" instance=ExtResource( 2 )]
-position = Vector2( 321.374, -239.48 )
+position = Vector2( 354.128, -53.4468 )
 
 [node name="Enemy3" parent="Enemies" instance=ExtResource( 2 )]
 position = Vector2( 591.328, -259.292 )

@@ -10,9 +10,10 @@ export var jump_accel = 400
 export var max_health = 100
 export var init_damage = 60
 
+var is_alive = true
+
 var _motion = Vector2.ZERO
 var _is_attacking = false
-var _is_alive = true
 var _double_jump_possible = false
 
 onready var _health = max_health setget _set_health
@@ -28,7 +29,8 @@ func _set_health(new_health):
 
 
 func die():
-	_is_alive = false
+	is_alive = false
+	GlobalVariables.is_alive = false
 	_motion = Vector2.ZERO
 	_motion = move_and_slide(_motion, Vector2.UP)
 	$Sprite.rotate(PI / 2)
@@ -50,7 +52,7 @@ func take_damage(dmg):
 
 
 func handle_attack():
-	if !_is_alive:
+	if !is_alive:
 		return
 	if Input.is_action_just_pressed("lmb") and !_is_attacking:
 		_is_attacking = true
@@ -60,7 +62,7 @@ func handle_attack():
 
 
 func handle_animation():
-	if !_is_alive or _is_attacking:
+	if !is_alive or _is_attacking:
 		return
 		
 	if is_on_floor() and abs(_motion.x) > 1:
@@ -70,7 +72,7 @@ func handle_animation():
 		
 
 func handle_movement(motion_vector):
-	if !_is_alive:
+	if !is_alive:
 		return motion_vector
 		
 	if Input.is_action_pressed("move_left"):
@@ -118,6 +120,7 @@ func play_attack_sound():
 
 # Lifecycles
 func _ready():
+	GlobalVariables.is_alive = true
 	EventBus.connect("player_attacked", self, "_on_player_attacked")
 	
 	
